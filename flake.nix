@@ -23,6 +23,8 @@
           pkgs.pagefind
           pkgs.jq
           nixos-search.packages.${system}.flake-info
+          pkgs.uv
+          pkgs.ruff
         ];
       };
     };
