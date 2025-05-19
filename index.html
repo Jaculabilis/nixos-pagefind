@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+    <script src="/pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+    <div id="search"></div>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            new PagefindUI({
+                element: "#search",
+                pageSize: 20,
+                showSubResults: true,
+                showEmptyFilters: false,
+                processResult: function (result) {
+                    if (result.meta.description) {
+                        result.excerpt = result.meta.description;
+                    }
+                },
+            });
+        });
+    </script>
+</body>
+</html>

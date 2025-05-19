@@ -16,3 +16,21 @@ data/android-tools.json:
 data/hello.json:
 	@mkdir -p data
 	flake-info --json nixpkgs --attr hello unstable | jq > data/hello.json
+
+data/nixpkgs.json:
+	@mkdir -p data
+	flake-info --json nixpkgs unstable | jq > data/nixpkgs.json
+
+data/nixpkgs-small.json: data/nixpkgs.json
+	@mkdir -p data
+	jq '[ .[range(10; length; 100)] ]' data/nixpkgs.json > data/nixpkgs-small.json
+
+.PHONY: out
+out:
+	rm -rf out || true
+	python3 build.py out data/nixpkgs.json
+
+.PHONY: build
+build:
+	cp index.html out/index.html
+	pagefind --site out --serve
