@@ -30,4 +30,4 @@ build:  ## run pagefind and serve
 build-pages:  ## build for GitHub Pages
 	@nix --accept-flake-config -vL run .#staticgen -- --channel nixos-unstable --out out
 	@cp index.html out/index.html
-	@pagefind --site out
+	@nix run .#pagefind -- --site out

@@ -20,6 +20,7 @@
 
       packages.${system} = {
         staticgen = import ./staticgen { inherit pkgs; };
+        pagefind = pkgs.pagefind;
       };
 
       devShells.${system}.default = pkgs.mkShell {
