@@ -96,10 +96,26 @@ def generate_pages(
     pkg_dir = out / "packages"
 
     for name, pkg in pkgs.items():
+        # Perform some field normalizations up front to make the template cleaner
+        package_set = "No package set"
+        if "." in name:
+            package_set, name = name.rsplit(".", 1)
+
+        licenses = pkg.get("meta", {}).get("license", [])
+        if isinstance(licenses, dict):
+            licenses = [licenses]
+
         file_name = f"{name}.html"
         file_path = pkg_dir / file_name
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_text(package.render(name=name, pkg=pkg))
+        file_path.write_text(
+            package.render(
+                name=name,
+                pkg=pkg,
+                package_set=package_set,
+                licenses=licenses,
+            )
+        )
 
     logging.info(f"Wrote {len(pkgs)} packages to {pkg_dir}")
 
@@ -118,7 +134,9 @@ def main() -> None:
     )
     filter.add_argument("--attr", default=None, help="Filter to this attribute")
 
-    parser.add_argument("--write-json", help="Write the loaded package data to a file")
+    parser.add_argument(
+        "--write-json", help="Write the loaded package data to a file, - for stdout"
+    )
     parser.add_argument("--out", help="Generate static pages in this directory")
 
     args = parser.parse_args()
@@ -152,7 +170,9 @@ def main() -> None:
         with open(from_json) as f:
             pkgs = json.load(f)
 
-    if write_json:
+    if write_json == "-":
+        json.dump(pkgs, sys.stdout)
+    elif write_json:
         with open(write_json, "w") as f:
             json.dump(pkgs, f)
 

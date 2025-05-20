@@ -2,4 +2,94 @@
 
 {% block title %}{{ name }}{% endblock %}
 
-{% block body %}<h1>{{ name }}</h1>{% endblock %}
+{% block body -%}
+<article>
+  <h2 data-pagefind-filter="package set:{{ package_set }}">
+    <span data-pagefind-filter="type:package">&#x1F4E6;</span>
+    {{ name }}
+  </h2>
+  {% if pkg.meta.description %}<p>{{ pkg.meta.description }}</p>{% endif %}
+  <ul>
+    <li>Name: <span>{{ name }}</span></li>
+    <li>Version: <span>{{ pkg.version }}</span></li>
+    {% if pkg.meta.homepage %}<li><a href="{{ pkg.meta.homepage }}">Homepage</a></li>{% endif %}
+    {% if pkg.meta.position %}<li><a href="{{ pkg.meta.position }}">Source</a></li>{% endif %}
+    {% if licenses %}<li>
+      {%- for license in licenses -%}
+      <a href="{{ license.url }}" data-pagefind-filter="license">{{ license.fullName }}</a>{% if not loop.last %} {% endif %}
+      {%- endfor -%}
+    </li>
+    {% endif%}
+    <li>Available: <span data-pagefind-filter="available">{{ pkg.meta.available }}</span></li>
+    <li>Broken: <span data-pagefind-filter="broken">{{ pkg.meta.broken }}</span></li>
+    <li>Insecure: <span data-pagefind-filter="insecure">{{ pkg.meta.insecure }}</span></li>
+    <li>Unfree: <span data-pagefind-filter="unfree">{{ pkg.meta.unfree }}</span></li>
+    <li>Unsupported: <span data-pagefind-filter="unsupported">{{ pkg.meta.unsupported }}</span></li>
+  </ul>
+  <details>
+    <summary>Package details</summary>
+
+    <p style="white-space: pre-wrap">{{ pkg.meta.longDescription }}</p>
+
+    <h4>Programs provided</h4>
+    {% if pkg.meta.programs %}
+    {% for program in pkg.meta.programs %}
+    <code data-pagefine-meta="program">{{ program }}</code>
+    {% endfor %}
+    {% else %}
+    <p>This package provides no programs.</p>
+    {% endif %}
+
+    <h4>Maintainers</h4>
+    {% if pkg.meta.maintainers %}
+    <ul>
+      {% for maintainer in pkg.meta.maintainers %}
+      <li>
+        {% if maintainer.github %}
+        <a href="https://github.com/{{ maintainer.github }}" data-pagefind-filter="maintainer">{{ maintainer.name }}</a>
+        {% else %}
+        <span data-pagefind-filter="maintainer">{{ maintainer.name }}</span>
+        {% endif %}
+        {% if maintainer.email %}
+        &lt;<a href="mailto:{{ maintainer.email }}">{{ maintainer.email }}</a>&gt;
+        {% endif %}
+      </li>
+      {% endfor %}
+      {% if pkg.meta.maintainers | length > 1 %}
+      <li><a href="mailto{% for m in pkg.meta.maintainers %}{{ m.email }}{% if not loop.last %},{% endif%}{% endfor %}">Mail to all maintainers</a></li>
+      {% endif %}
+      <li>
+        Maintainer GitHub handles:
+        <code>{% for m in pkg.meta.maintainers %}@{{ m.github }}{% if not loop.last %} {% endif%}{% endfor %}</code>
+      </li>
+    </ul>
+    {% else %}
+    <p data-pagefind-filter="maintainer:Unmaintained">This package has no maintainers. If you find it useful, please consider becoming a maintainer!</p>
+    {% endif %}
+
+    {% if pkg.meta.teams %}
+    <h4>Teams</h4>
+    <ul>
+      {% for team in pkg.meta.teams %}
+      <li>
+        <span data-pagefind-filter="team">{{ team.shortName }}</span>
+        {% if team.githubTeams %}
+        (<a href="https://github.com/orgs/NixOS/teams/{{ team.githubTeams[0] }}">@NixOS/{{ team.githubTeams[0] }}</a>)
+        {% endif %}
+        <br>
+        <em>{{ team.scope }}</em>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h4>Platforms</h4>
+    <ul>
+      {% for platform in pkg.meta.platforms | sort -%}
+      <li data-pagefind-filter="platform">{{ platform }}</li>
+      {% endfor %}
+    </ul>
+
+  </details>
+</article>
+{% endblock %}
