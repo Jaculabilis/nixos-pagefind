@@ -8,19 +8,33 @@
     <script src="pagefind/pagefind-ui.js"></script>
 </head>
 <body>
+    <h1>Search nixpkgs</h1>
     <div id="search"></div>
     <script>
         window.addEventListener('DOMContentLoaded', (event) => {
             new PagefindUI({
                 element: "#search",
-                pageSize: 20,
-                showSubResults: true,
+                pageSize: 10,
                 showEmptyFilters: false,
                 processResult: function (result) {
                     if (result.meta.description) {
                         result.excerpt = result.meta.description;
                     }
                 },
+            });
+            let searchBar = document.getElementsByClassName("pagefind-ui__search-input")[0];
+            // Read query from ?q=
+            let query = new URLSearchParams(window.location.search).get('q');
+            if (query) {
+                searchBar.value = query;
+                let inp = new InputEvent('input');
+                searchBar.dispatchEvent(inp);
+            }
+            // Update ?q= with query
+            searchBar.addEventListener("input", (event) => {
+                let newUrl = new URL(window.location);
+                newUrl.searchParams.set('q', searchBar.value);
+                window.history.replaceState({}, '', newUrl);
             });
         });
     </script>
