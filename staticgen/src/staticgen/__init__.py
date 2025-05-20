@@ -105,7 +105,7 @@ def generate_pages(
         # Perform some field normalizations up front to make the template cleaner
         package_set = "No package set"
         if "." in name:
-            package_set, name = name.rsplit(".", 1)
+            package_set, _ = name.rsplit(".", 1)
 
         licenses = pkg.get("meta", {}).get("license", [])
         if isinstance(licenses, dict):
