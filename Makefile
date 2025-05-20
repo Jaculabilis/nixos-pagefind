@@ -11,16 +11,23 @@ data/nixpkgs-small.json: data/nixpkgs.json  ## generate a smaller subset of test
 	jq 'with_entries(select(.key | test("(^an)|(^h)")))' data/nixpkgs.json > data/nixpkgs-small.json
 
 .PHONY: out
-out: data/nixpkgs.json
+out: data/nixpkgs.json  ## build static pages from data/nixpkgs.json
 	rm -rf out || true
 	nix run .#staticgen -- --from-json data/nixpkgs.json --out out
 
 .PHONY: out-small
-out-small: data/nixpkgs-small.json
+out-small: data/nixpkgs-small.json  ## build static pages from data/nixpkgs-small.json
 	rm -rf out || true
 	nix run .#staticgen -- --from-json data/nixpkgs-small.json --out out
 
 .PHONY: build
-build:
+build:  ## run pagefind and serve
 	cp index.html out/index.html
 	pagefind --site out --serve
+
+
+.PHONY: build-pages
+build-pages:  ## build for GitHub Pages
+	@nix --accept-flake-config -vL run .#staticgen -- --channel nixos-unstable --out out
+	@cp index.html out/index.html
+	@pagefind --site out
