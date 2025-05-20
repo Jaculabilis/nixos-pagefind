@@ -96,6 +96,10 @@ def generate_pages(
     pkg_dir = out / "packages"
 
     for name, pkg in pkgs.items():
+        file_name = f"{name}.html"
+        file_path = pkg_dir / file_name
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+
         # Perform some field normalizations up front to make the template cleaner
         package_set = "No package set"
         if "." in name:
@@ -105,9 +109,6 @@ def generate_pages(
         if isinstance(licenses, dict):
             licenses = [licenses]
 
-        file_name = f"{name}.html"
-        file_path = pkg_dir / file_name
-        file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(
             package.render(
                 name=name,
