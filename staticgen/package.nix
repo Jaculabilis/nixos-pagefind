@@ -3,7 +3,7 @@
   python3Packages,
 }:
 python3Packages.buildPythonApplication rec {
-    pname = "static-gen";
+    pname = "staticgen";
     version = "0.0.0";
     pyproject = true;
 

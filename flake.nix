@@ -18,6 +18,10 @@
     {
       formatter.${system} = pkgs.nixfmt-rfc-style;
 
+      packages.${system} = {
+        staticgen = import ./staticgen { inherit pkgs; };
+      };
+
       devShells.${system}.default = pkgs.mkShell {
         packages = [
           pkgs.pagefind
