@@ -8,12 +8,12 @@
     <span data-pagefind-filter="type:package">&#x1F4E6;</span>
     {{ name }}
   </h2>
-  {% if pkg.meta.description %}<p>{{ pkg.meta.description }}</p>{% endif %}
+  {% if pkg.meta.description %}<p data-pagefind-meta="description">{{ pkg.meta.description }}</p>{% endif %}
   <ul>
-    <li>Name: <span>{{ name }}</span></li>
-    <li>Version: <span>{{ pkg.version }}</span></li>
-    {% if pkg.meta.homepage %}<li><a href="{{ pkg.meta.homepage }}">Homepage</a></li>{% endif %}
-    {% if pkg.meta.position %}<li><a href="{{ pkg.meta.position }}">Source</a></li>{% endif %}
+    <li>Name: <span data-pagefind-meta="name">{{ name }}</span></li>
+    <li>Version: <span data-pagefind-meta="version">{{ pkg.version }}</span></li>
+    {% if pkg.meta.homepage %}<li><a href="{{ pkg.meta.homepage }}" data-pagefind-meta="homepage[href]">Homepage</a></li>{% endif %}
+    {% if pkg.meta.position %}<li><a href="{{ pkg.meta.position }}" data-pagefind-meta="position[href]">Source</a></li>{% endif %}
     {% if licenses %}<li>
       {%- for license in licenses -%}
       <a href="{{ license.url }}" data-pagefind-filter="license">{{ license.fullName }}</a>{% if not loop.last %} {% endif %}
