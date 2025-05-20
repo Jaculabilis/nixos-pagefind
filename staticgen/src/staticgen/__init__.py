@@ -8,6 +8,7 @@ import shlex
 import sqlite3
 import subprocess
 import sys
+import time
 from typing import Any
 import jinja2
 
@@ -95,6 +96,7 @@ def generate_pages(
     package = env.get_template("package.jinja")
     pkg_dir = out / "packages"
 
+    start = time.perf_counter()
     for name, pkg in pkgs.items():
         file_name = f"{name}.html"
         file_path = pkg_dir / file_name
@@ -117,8 +119,9 @@ def generate_pages(
                 licenses=licenses,
             )
         )
+    end = time.perf_counter()
 
-    logging.info(f"Wrote {len(pkgs)} packages to {pkg_dir}")
+    logging.info(f"Wrote {len(pkgs)} packages to {pkg_dir} in {end - start:0.2f}s")
 
 
 def main() -> None:
@@ -157,6 +160,7 @@ def main() -> None:
         sys.exit(1)
 
     if channel:
+        start = time.perf_counter()
         pkgs = get_channel_packages(
             channel_name=args.channel, name=name, attribute=attr
         )
@@ -166,7 +170,10 @@ def main() -> None:
                 if "meta" not in pkg:
                     pkg["meta"] = {}
                 pkg["meta"]["programs"] = list(sorted(pkg_progs))
-        logging.info(f"Loaded {len(pkgs)} packages from channel {channel}")
+        end = time.perf_counter()
+        logging.info(
+            f"Loaded {len(pkgs)} packages from channel {channel} in {end - start:0.2f}s"
+        )
     elif from_json:
         with open(from_json) as f:
             pkgs = json.load(f)
