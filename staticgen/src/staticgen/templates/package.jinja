@@ -84,11 +84,16 @@
     {% endif %}
 
     <h4>Platforms</h4>
+    {# some packages have malformed meta.platforms that aren't sortable #}
+    {% if pkg.meta.platforms and pkg.meta.platforms[0] is string %}
     <ul>
       {% for platform in pkg.meta.platforms | sort -%}
       <li data-pagefind-filter="platform">{{ platform }}</li>
       {% endfor %}
     </ul>
+    {% else %}
+    <p>This package does not list its available platforms.</p>
+    {% endif %}
 
   </details>
 </article>
